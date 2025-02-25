@@ -81,13 +81,13 @@ float temp_avg = 0;
 int fan_speed;
 
 struct sensor *sensors = NULL;
-struct sensor *sensor_TC0P = NULL;
-struct sensor *sensor_TG0P = NULL;
+struct sensor *sensor_TC0D = NULL;
+//struct sensor *sensor_TG0P = NULL;
 
 #define CTL_NONE	0	// sensor control fan flags
 #define CTL_AVG		1
-#define CTL_TC0P	2
-#define CTL_TG0P	3
+#define CTL_TC0D	2
+//#define CTL_TG0P	3
 
 int fan_ctl = 0;		// which sensor controls fan
 
@@ -243,31 +243,31 @@ void calc_fan()
 
 	// calc fan speed for TC0P
 
-	if(sensor_TC0P != NULL)
+	if(sensor_TC0D != NULL)
 	{
-		float temp_window = temp_TC0P_ceiling - temp_TC0P_floor;
-		float normalized_temp =(sensor_TC0P->value - temp_TC0P_floor) / temp_window;
-		float fan_TC0P_speed =(normalized_temp * fan_window);
-		if(fan_TC0P_speed > fan_speed)
+		float temp_window = temp_TC0D_ceiling - temp_TC0D_floor;
+		float normalized_temp =(sensor_TC0D->value - temp_TC0D_floor) / temp_window;
+		float fan_TC0D_speed =(normalized_temp * fan_window);
+		if(fan_TC0D_speed > fan_speed)
 		{
-			fan_speed = fan_TC0P_speed;
-			fan_ctl = CTL_TC0P;
+			fan_speed = fan_TC0D_speed;
+			fan_ctl = CTL_TC0D;
 		}
 	}
 
 	// calc fan speed for TG0P
 
-	if(sensor_TG0P != NULL)
-	{
-		float temp_window = temp_TG0P_ceiling - temp_TG0P_floor;
-		float normalized_temp =(sensor_TG0P->value - temp_TG0P_floor) / temp_window;
-		float fan_TG0P_speed =(normalized_temp * fan_window);
-		if(fan_TG0P_speed > fan_speed)
-		{
-			fan_speed = fan_TG0P_speed;
-			fan_ctl = CTL_TG0P;
-		}
-	}
+	//if(sensor_TG0P != NULL)
+	//{
+	//	float temp_window = temp_TG0P_ceiling - temp_TG0P_floor;
+	//	float normalized_temp =(sensor_TG0P->value - temp_TG0P_floor) / temp_window;
+	//	float fan_TG0P_speed =(normalized_temp * fan_window);
+	//	if(fan_TG0P_speed > fan_speed)
+	//	{
+	//		fan_speed = fan_TG0P_speed;
+	//		fan_ctl = CTL_TG0P;
+	//	}
+	//}
 
 	// finally clamp
 
@@ -360,8 +360,8 @@ void scan_sensors()
 	struct stat buf;
 	int result;
 
-	sensor_TC0P = NULL;
-	sensor_TG0P = NULL;
+	sensor_TC0D = NULL;
+	//sensor_TG0P = NULL;
 
 	// get number of fans
 
@@ -479,17 +479,17 @@ void scan_sensors()
 		{
 			if(! sensors[i].excluded)
 			{
-				// try to find TC0P and TG0P
-				// if found, assign sensor_TC0P and sensor_TG0P for later use
+				// try to find TC0D and TG0P
+				// if found, assign sensor_TC0D and sensor_TG0P for later use
 
-				if(strcmp(sensors[i].name, "TC0P") == 0)
+				if(strcmp(sensors[i].name, "TC0D") == 0)
 				{
-					sensor_TC0P = &sensors[i];
+					sensor_TC0D = &sensors[i];
 				}
-				else if(strcmp(sensors[i].name, "TG0P") == 0)
-				{
-					sensor_TG0P = &sensors[i];
-				}
+				//else if(strcmp(sensors[i].name, "TG0P") == 0)
+				//{
+				//	sensor_TG0P = &sensors[i];
+				//}
 			}
 
 			// print out sensor information.
@@ -535,19 +535,19 @@ void logger()
 			   fan_ctl == CTL_AVG ? "*" : " ",
 			   temp_avg);
 
-		if(sensor_TC0P != NULL)
+		if(sensor_TC0D != NULL)
 		{
-			printf(", %sTC0P: %.1fC" ,
-				   fan_ctl == CTL_TC0P ? "*" : " ",
-				   sensor_TC0P->value);
+			printf(", %sTC0D: %.1fC" ,
+				   fan_ctl == CTL_TC0D ? "*" : " ",
+				   sensor_TC0D->value);
 		}
 
-		if(sensor_TG0P != NULL)
-		{
-			printf(", %sTG0P: %.1fC" ,
-				   fan_ctl == CTL_TG0P ? "*" : " ",
-				   sensor_TG0P->value);
-		}
+		//if(sensor_TG0P != NULL)
+		//{
+		//	printf(", %sTG0P: %.1fC" ,
+		//		   fan_ctl == CTL_TG0P ? "*" : " ",
+		//		   sensor_TG0P->value);
+		//}
 
 		if(log_level > 1)
 		{
