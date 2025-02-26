@@ -27,11 +27,11 @@ static FILE *fp;
 float temp_avg_floor = 40;		// default values if no config file is found
 float temp_avg_ceiling = 50;
 
-float temp_TC0D_floor = 40;
+float temp_TC0D_floor = 40;    // media cpu temp
 float temp_TC0D_ceiling = 50;
 
-//float temp_TG0P_floor = 40;
-//float temp_TG0P_ceiling = 50;
+float temp_TN1D_floor = 40;   // gpu nvidia temp
+float temp_TN1D_ceiling = 50;
 
 float fan_min = 0;
 float fan_max = 6200;			// fixed max value
@@ -237,8 +237,8 @@ void read_cfg(char* name)
 		temp_TC0D_ceiling = read_param("temp_TC0D_ceiling",	0, 90, 65);
 		temp_TC0D_floor = read_param("temp_TC0D_floor",		0, temp_TC0D_ceiling - 1, 50);
 
-		//temp_TG0P_ceiling = read_param("temp_TG0P_ceiling",	0, 90, 80);
-		//temp_TG0P_floor = read_param("temp_TG0P_floor",		0, temp_TG0P_ceiling - 1, 65);
+		temp_TN1D_ceiling = read_param("temp_TN1D_ceiling",	0, 90, 80);
+		temp_TN1D_floor = read_param("temp_TN1D_floor",		0, temp_TN1D_ceiling - 1, 65);
 
 		fan_min = read_param("fan_min", 0, 6200, 0);
 
@@ -261,8 +261,8 @@ void read_cfg(char* name)
 	printf("\ttemp_TC0D_floor: %.0f\n", temp_TC0D_floor);
 	printf("\ttemp_TC0D_ceiling: %.0f\n", temp_TC0D_ceiling);
 
-	//printf("\ttemp_TG0P_floor: %.0f\n", temp_TG0P_floor);
-	//printf("\ttemp_TG0P_ceiling: %.0f\n", temp_TG0P_ceiling);
+	printf("\ttemp_TN1D_floor: %.0f\n", temp_TN1D_floor);
+	printf("\ttemp_TN1D_ceiling: %.0f\n", temp_TN1D_ceiling);
 
 	printf("\tfan_min: %.0f\n", fan_min);
 

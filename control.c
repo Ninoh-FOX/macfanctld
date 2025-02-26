@@ -45,6 +45,7 @@ sensor_desc[] =
 	{"TC0P", "CPU 0 Proximity Temp"},
 	{"TG0D", "GPU Die - Digital"},
 	{"TG0P", "GPU 0 Proximity Temp"},
+	{"TN1D", "GPU Nvidia temp"},
 	{"TG0T", "GPU 0 Die - Analog Temp"},
 	{"TG0H", "Left Heat Pipe/Fin Stack Proximity Temp"},
 	{"TG1H", "Left Heat Pipe/Fin Stack Proximity Temp"},
@@ -82,12 +83,12 @@ int fan_speed;
 
 struct sensor *sensors = NULL;
 struct sensor *sensor_TC0D = NULL;
-//struct sensor *sensor_TG0P = NULL;
+struct sensor *sensor_TN1D = NULL;
 
 #define CTL_NONE	0	// sensor control fan flags
 #define CTL_AVG		1
 #define CTL_TC0D	2
-//#define CTL_TG0P	3
+#define CTL_TN1D	3
 
 int fan_ctl = 0;		// which sensor controls fan
 
@@ -255,19 +256,19 @@ void calc_fan()
 		}
 	}
 
-	// calc fan speed for TG0P
+	// calc fan speed for TN1D
 
-	//if(sensor_TG0P != NULL)
-	//{
-	//	float temp_window = temp_TG0P_ceiling - temp_TG0P_floor;
-	//	float normalized_temp =(sensor_TG0P->value - temp_TG0P_floor) / temp_window;
-	//	float fan_TG0P_speed =(normalized_temp * fan_window);
-	//	if(fan_TG0P_speed > fan_speed)
-	//	{
-	//		fan_speed = fan_TG0P_speed;
-	//		fan_ctl = CTL_TG0P;
-	//	}
-	//}
+	if(sensor_TN1D != NULL)
+	{
+		float temp_window = temp_TN1D_ceiling - temp_TN1D_floor;
+		float normalized_temp =(sensor_TN1D->value - temp_TN1D_floor) / temp_window;
+		float fan_TN1D_speed =(normalized_temp * fan_window);
+		if(fan_TN1D_speed > fan_speed)
+		{
+			fan_speed = fan_TN1D_speed;
+			fan_ctl = CTL_TN1D;
+		}
+	}
 
 	// finally clamp
 
@@ -361,7 +362,7 @@ void scan_sensors()
 	int result;
 
 	sensor_TC0D = NULL;
-	//sensor_TG0P = NULL;
+	sensor_TN1D = NULL;
 
 	// get number of fans
 
@@ -479,17 +480,17 @@ void scan_sensors()
 		{
 			if(! sensors[i].excluded)
 			{
-				// try to find TC0D and TG0P
-				// if found, assign sensor_TC0D and sensor_TG0P for later use
+				// try to find TC0D and TN1D
+				// if found, assign sensor_TC0D and sensor_TN1D for later use
 
 				if(strcmp(sensors[i].name, "TC0D") == 0)
 				{
 					sensor_TC0D = &sensors[i];
 				}
-				//else if(strcmp(sensors[i].name, "TG0P") == 0)
-				//{
-				//	sensor_TG0P = &sensors[i];
-				//}
+				else if(strcmp(sensors[i].name, "TN1D") == 0)
+				{
+					sensor_TN1D = &sensors[i];
+				}
 			}
 
 			// print out sensor information.
@@ -542,12 +543,12 @@ void logger()
 				   sensor_TC0D->value);
 		}
 
-		//if(sensor_TG0P != NULL)
-		//{
-		//	printf(", %sTG0P: %.1fC" ,
-		//		   fan_ctl == CTL_TG0P ? "*" : " ",
-		//		   sensor_TG0P->value);
-		//}
+		if(sensor_TN1D != NULL)
+		{
+			printf(", %sTN1D: %.1fC" ,
+				   fan_ctl == CTL_TN1D ? "*" : " ",
+				   sensor_TN1D->value);
+		}
 
 		if(log_level > 1)
 		{

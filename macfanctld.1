@@ -5,7 +5,7 @@ macfanctld \- Fan control for MacBook
 .B macfanctld
 [\-f]
 .SH DESCRIPTION
-macfanctld is a daemon that reads temperature sensors and adjust the fan(s) speed on MacBook's. macfanctld is configurable and logs temp and fan data to a file. macfanctld uses three sources to determine the fan speeed: 1) average temperature from all sensors, 2) sensor TC0P [CPU 0 Proximity Temp and 3] and sensor TG0P [GPU 0 Proximity Temp]. Each source's impact on fan speed can be individually adjusted to fine tune working temperature on different MacBooks.
+macfanctld is a daemon that reads temperature sensors and adjust the fan(s) speed on MacBook's. macfanctld is configurable and logs temp and fan data to a file. macfanctld uses three sources to determine the fan speeed: 1) average temperature from all sensors, 2) sensor TC0P [CPU 0 Proximity Temp and 3] sensor TG0P [GPU 0 Proximity Temp] and sensor TN1D [GPU 1 Nvdia temp]. Each source's impact on fan speed can be individually adjusted to fine tune working temperature on different MacBooks.
 
 Important: macfanctld depends on applesmc-dkms.
 .SH OPTIONS
@@ -48,6 +48,13 @@ Temperature in Celsius at TG0P, at which the fan speed will be set to fan_min. V
 
 .I temp_TG0P_ceiling:
 Temperature in Celsius at TG0P, at which the fan speed will be set to max (6200). Valid values are 0 to 90, and must be larger than temp_TG0P_floor.
+
+.I temp_TN1D_floor
+:
+Temperature in Celsius at TN1D, at which the fan speed will be set to fan_min. Valid values are 0 to 90, and must be less than temp_TN1D_ceiling.
+
+.I temp_TN1D_ceiling:
+Temperature in Celsius at TN1D, at which the fan speed will be set to max (6200). Valid values are 0 to 90, and must be larger than temp_TN1D_floor.
 
 .I exclude: 
 A list of natural numbers defining sensors that should be excluded from reading. Example:

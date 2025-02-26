@@ -23,8 +23,8 @@ extern float temp_avg_ceiling;
 extern float temp_TC0D_floor;
 extern float temp_TC0D_ceiling;
 
-//extern float temp_TG0P_floor;
-//extern float temp_TG0P_ceiling;
+extern float temp_TN1D_floor;
+extern float temp_TN1D_ceiling;
 
 extern float fan_min;
 extern float fan_max;
